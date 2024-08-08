@@ -84,7 +84,6 @@ export const logout = async (req, res) => {
     } catch (error) {
         return res.status(500).json({ error: "Internal Server Error" });
     }
-<<<<<<< HEAD
 }
 
 export const getMe = async (req, res) => {
@@ -94,6 +93,4 @@ export const getMe = async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: "Internal Server Error" })
     }
-=======
->>>>>>> 167bea1a4056ec291ccdf95e8f168ccf0de8819c
 }
