@@ -1,16 +1,16 @@
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
-    username : {
+    username: {
         type: String,
         required: true,
         unique: true
     },
-    fullName : {
+    fullName: {
         type: String,
         required: true
     },
-    password : {
+    password: {
         type: String,
         required: true,
         minLength: 6,
@@ -30,7 +30,7 @@ const userSchema = new mongoose.Schema({
         ref: 'User',
         default: [],
     }],
-    profileImg : {
+    profileImg: {
         type: String,
         default: ""
     },
@@ -45,8 +45,13 @@ const userSchema = new mongoose.Schema({
     link: {
         type: String,
         default: ""
+    },
+    likedPosts: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Post',
+        default: [],
     }
-},{timestamps: true})
+}, { timestamps: true })
 
 const User = mongoose.model('User', userSchema);
 
