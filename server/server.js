@@ -2,6 +2,7 @@ import express from "express";
 import authRoutes from "./routes/auth.routes.js"
 import userRoutes from "./routes/user.routes.js"
 import postRoutes from "./routes/post.routes.js"
+import notificationRoutes from "./routes/notification.routes.js"
 import dotenv from "dotenv"
 import connectMongoDb from "./db/mongoDbConnect.js"
 import cookieParser from "cookie-parser";
@@ -28,6 +29,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/auth", authRoutes)
 app.use("/api/users", userRoutes)
 app.use("/api/post", postRoutes)
+app.use("/api/notification", notificationRoutes)
 
 app.listen("1000", () => {
     console.log("Server is running on port 1000");
