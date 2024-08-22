@@ -1,11 +1,43 @@
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
+import toast from 'react-hot-toast'
 import { Link } from 'react-router-dom'
 
+
 export default function LoginPage() {
-    const [error, setError] = useState()
     const [formData, setFormData] = useState({
         username: '',
         password: ''
+    })
+
+    const queryClient = useQueryClient()
+
+    const { mutate, isError, isPending, error } = useMutation({
+        mutationFn: async ({ username, password }) => {
+            try {
+                const res = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                })
+                // if (!res.ok) {
+                //     throw new Error("Something went wrong")
+                // }
+                const data = await res.json()
+                if (data.error) {
+                    throw new Error(data.error)
+                }
+                console.log(data)
+                toast.success('Logged In successfully')
+                return data
+            } catch (error) {
+                console.error(error)
+                toast.error(error.message)
+            }
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["authUser"] })
+        }
     })
 
     const handleInputChange = (e) => {
@@ -14,7 +46,7 @@ export default function LoginPage() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(formData)
+        mutate(formData)
     }
     return (
         <div className='h-[100dvh] flex flex-col items-center justify-center'>
@@ -61,13 +93,12 @@ export default function LoginPage() {
                         onChange={handleInputChange}
                     />
                 </label>
-                <button className='btn btn-neutral w-[80%] md:w-[40%]'>Submit</button>
+                <button className='btn btn-neutral w-[80%] md:w-[40%]'>{isPending ? "Loading..." : "Submit"}</button>
                 <div>
                     <p className='text-left'>
                         Don't have an account? <Link to="/signup" className='underline font-semibold'>SignUp</Link>
                     </p>
                 </div>
-                {error && <p className='text-red-500'>Something went wrong</p>}
             </form>
         </div>
     )

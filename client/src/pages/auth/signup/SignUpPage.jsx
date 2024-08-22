@@ -1,13 +1,39 @@
+import { useMutation } from '@tanstack/react-query'
 import { useState } from 'react'
+import toast from 'react-hot-toast'
 import { Link } from 'react-router-dom'
 
 export default function SignUpPage() {
-    const [error, setError] = useState()
     const [formData, setFormData] = useState({
         email: '',
         username: '',
         fullName: '',
         password: ''
+    })
+
+    const { mutate, isError, isPending, error } = useMutation({
+        mutationFn: async ({ email, username, fullName, password }) => {
+            try {
+                const res = await fetch('/api/auth/signup', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, username, fullName, password })
+                })
+                // if (!res.ok) {
+                //     throw new Error("Something went wrong")
+                // }
+                const data = await res.json()
+                if (data.error) {
+                    throw new Error(data.error)
+                }
+                console.log(data)
+                toast.success('Account created successfully')
+                return data
+            } catch (error) {
+                console.error(error)
+                toast.error(error.message)
+            }
+        },
     })
 
     const handleInputChange = (e) => {
@@ -16,7 +42,7 @@ export default function SignUpPage() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(formData)
+        mutate(formData)
     }
     return (
         <div className='h-[100dvh] flex flex-col items-center justify-center'>
@@ -101,13 +127,12 @@ export default function SignUpPage() {
                         onChange={handleInputChange}
                     />
                 </label>
-                <button className='btn btn-neutral w-[80%] md:w-[40%]'>Submit</button>
+                <button className='btn btn-neutral w-[80%] md:w-[40%]'>{isPending ? "Loading..." : "Submit"}</button>
                 <div>
                     <p className='text-left'>
                         Already have an account? <Link to="/login" className='underline font-semibold'>Login</Link>
                     </p>
                 </div>
-                {error && <p className='text-red-500'>Something went wrong</p>}
             </form>
         </div>
     )
