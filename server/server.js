@@ -7,8 +7,11 @@ import dotenv from "dotenv"
 import connectMongoDb from "./db/mongoDbConnect.js"
 import cookieParser from "cookie-parser";
 import { v2 as cloudinary } from "cloudinary"
+import cors from "cors"
+
 
 dotenv.config();
+
 
 cloudinary.config(
     {
@@ -19,6 +22,7 @@ cloudinary.config(
 )
 
 const app = express();
+app.use(cors());
 
 app.use(express.json());
 

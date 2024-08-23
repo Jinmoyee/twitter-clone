@@ -32,7 +32,7 @@ const HomePage = () => {
             <div className="border-b-[0.15rem] border-neutral"></div>
             <div className="text-left">
                 <CreatePosts />
-                <Posts />
+                <Posts feedType={feedType} />
             </div>
         </div>
     );
