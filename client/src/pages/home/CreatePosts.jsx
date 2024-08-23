@@ -3,15 +3,48 @@ import { BsEmojiSmileFill } from "react-icons/bs";
 import { useRef, useState } from "react";
 
 import { IoCloseSharp } from "react-icons/io5";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 
 const CreatePost = () => {
     const [text, setText] = useState("");
     const [img, setImg] = useState(null);
 
-    const imgRef = useRef(null);
+    const { data: authUser } = useQuery({ queryKey: ["authUser"] })
+    const queryClient = useQueryClient()
 
-    const isPending = false;
-    const isError = false;
+    const { mutate: createPost, isPending } = useMutation({
+        mutationFn: async ({ text, img }) => {
+            try {
+                const res = await fetch("/api/post/create", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${authUser.token}`,
+                    },
+                    body: JSON.stringify({ text, img }),
+                })
+                const data = await res.json()
+                if (!res.ok) {
+                    throw new Error(data.error || "Failed to create post")
+                }
+                return data
+            } catch (error) {
+                throw new Error(error)
+            }
+        },
+        onSuccess: () => {
+            setText("")
+            setImg(null)
+            toast.success('Post created successfully')
+            queryClient.invalidateQueries({ queryKey: ['posts'] })
+        },
+        onError: (error) => {
+            toast.error('Failed to create post')
+        },
+    })
+
+    const imgRef = useRef(null);
 
     const data = {
         profileImg: "/avatars/boy1.png",
@@ -19,7 +52,7 @@ const CreatePost = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        alert("Post created successfully");
+        createPost({ text, img })
     };
 
     const handleImgChange = (e) => {
@@ -37,7 +70,7 @@ const CreatePost = () => {
         <div className='flex p-4 items-start gap-4 border-b-[0.15rem] border-neutral'>
             <div className='avatar'>
                 <div className='w-8 rounded-full'>
-                    <img src={data.profileImg || "/avatar-placeholder.png"} />
+                    <img src={authUser.profileImg || "/avatar-placeholder.png"} />
                 </div>
             </div>
             <form className='flex flex-col gap-2 w-full' onSubmit={handleSubmit}>
@@ -69,11 +102,10 @@ const CreatePost = () => {
                         <BsEmojiSmileFill className='fill-neutral w-5 h-5 cursor-pointer' color="black" />
                     </div>
                     <input type='file' hidden ref={imgRef} onChange={handleImgChange} />
-                    <button className='btn btn-neutral rounded-full btn-sm text-white px-4'>
+                    <button className='btn text-neutral border border-neutral hover:bg-amber-950 hover:text-white hover:opacity-90 rounded-full btn-sm'>
                         {isPending ? "Posting..." : "Post"}
                     </button>
                 </div>
-                {isError && <div className='text-red-500'>Something went wrong</div>}
             </form>
         </div>
     );

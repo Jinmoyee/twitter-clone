@@ -18,7 +18,7 @@ const EditProfileModal = () => {
     return (
         <>
             <button
-                className='btn btn-outline rounded-full btn-sm'
+                className='btn text-white border hover:border-neutral bg-neutral hover:text-black hover:opacity-90 rounded-full btn-sm'
                 onClick={() => document.getElementById("edit_profile_modal").showModal()}
             >
                 Edit profile

@@ -122,7 +122,7 @@ const ProfilePage = () => {
                                 )}
                                 {(coverImg || profileImg) && (
                                     <button
-                                        className='btn btn-neutral rounded-full btn-sm text-white px-4 ml-2'
+                                        className='btn text-neutral border border-neutral hover:bg-amber-950 hover:text-white hover:opacity-90 rounded-full btn-sm ml-2'
                                         onClick={() => alert("Profile updated successfully")}
                                     >
                                         Update
