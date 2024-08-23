@@ -1,10 +1,12 @@
-import { useState } from 'react'
-import { USERS_FOR_RIGHT_PANEL } from '../../../utils/db/dummey'
+// import { useState } from 'react'
+// import { USERS_FOR_RIGHT_PANEL } from '../../../utils/db/dummey'
 import RightPanelSkeleton from '../skeletons/RightPanelSkeleton'
 import { useQuery } from '@tanstack/react-query'
 import { Link } from 'react-router-dom'
+import useFollow from '../../hooks/useFollow'
+import LoadingSpinner from './LoadingSpinner'
 export default function RightPanel() {
-    const { data: suggestedUsers, isLoading, isPending } = useQuery({
+    const { data: suggestedUsers, isLoading } = useQuery({
         queryKey: ['suggestedUsers'],
         queryFn: async () => {
             // Fetch data from API
@@ -20,6 +22,8 @@ export default function RightPanel() {
             }
         },
     })
+
+    const { follow } = useFollow()
 
     if (suggestedUsers?.length === 0) return <div className='md:w-64 w-0'></div>;
 
@@ -60,7 +64,10 @@ export default function RightPanel() {
                                 <div>
                                     <button
                                         className='btn text-neutral border border-neutral hover:bg-amber-950 hover:text-white hover:opacity-90 rounded-full btn-sm'
-                                        onClick={(e) => e.preventDefault()}
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            follow(user._id);
+                                        }}
                                     >
                                         Follow
                                     </button>

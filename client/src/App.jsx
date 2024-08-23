@@ -24,7 +24,7 @@ export default function App() {
         if (!res.ok) {
           throw new Error(data.error || 'Failed to fetch user data')
         }
-        console.log("Auth User", data)
+        // console.log("Auth User", data)
         return data
       } catch (error) {
         throw new Error(error)
