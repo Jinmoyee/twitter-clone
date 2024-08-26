@@ -56,7 +56,7 @@ export default function Sidebar() {
 
             <div className='absolute bottom-3 mr-auto ml-auto left-0 right-0 w-[70%] hover:bg-neutral hover:text-white border-2 border-neutral rounded-lg'>
                 <div className='flex justify-center lg:justify-around item-center h-full border-none p-0 lg:p-2 rounded-lg lg:flex-row flex-col'>
-                    <Link to='/profile/:username'>
+                    <Link to={`/profile/${userData?.username}`}>
                         <div className='flex gap-2'>
                             <div className='w-12'>
                                 <img src={userData.avatar || "/avatar-placeholder.png"} alt="" className='rounded-full' />
