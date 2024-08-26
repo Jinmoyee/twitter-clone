@@ -75,7 +75,10 @@ export const commentPost = async (req, res) => {
         post.comments.push(comment)
 
         await post.save()
-        res.status(200).json(post);
+        const updatedComments = post.comments.filter((id) => {
+            return id.toString() !== userId.toString();
+        })
+        res.status(200).json(updatedComments);
     } catch (err) {
         return res.status(500).json({ error: "Internal Server Error" })
     }

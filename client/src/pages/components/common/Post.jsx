@@ -92,9 +92,18 @@ const Post = ({ post }) => {
                 toast.error(error.message)
             }
         },
-        onSuccess: () => {
+        onSuccess: (updatedComments) => {
             toast.success("Comment posted successfully")
             setComment("")
+            // queryClient.invalidateQueries({ queryKey: ["posts"] });
+            queryClient.setQueryData(['posts'], (oldData) => {
+                return oldData.map(p => {
+                    if (p._id === post._id) {
+                        return { ...p, comments: updatedComments }
+                    }
+                    return p;
+                })
+            })
         },
         onError: (error) => {
             toast.error(error.message)
@@ -209,12 +218,13 @@ const Post = ({ post }) => {
                                         onSubmit={handlePostComment}
                                     >
                                         <textarea
-                                            className='textarea w-full p-1 rounded text-md resize-none border focus:outline-none'
+                                            className='textarea w-full p-2 px-4 rounded-full text-md border border-neutral focus:outline-none'
                                             placeholder='Add a comment...'
                                             value={comment}
                                             onChange={(e) => setComment(e.target.value)}
+                                            style={{ lineHeight: '2', height: '40px', overflow: 'hidden' }}
                                         />
-                                        <button className='btn btn-neutral rounded-full btn-sm text-white px-4'>
+                                        <button className='btn text-white border hover:border-neutral bg-neutral hover:text-black hover:opacity-90 rounded-full btn-sm'>
                                             {isCommenting ? (
                                                 <span className='loading loading-spinner loading-md'></span>
                                             ) : (
