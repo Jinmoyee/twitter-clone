@@ -49,7 +49,7 @@ export default function LoginPage() {
         mutate(formData)
     }
     return (
-        <div className='h-[100dvh] flex flex-col items-center justify-center'>
+        <div className='h-[100dvh] flex flex-col items-center justify-center w-full'>
             <h1 className='text-5xl mb-5 font-bold'>Lets Go.</h1>
             <form
                 className='w-full flex items-center flex-col gap-3'

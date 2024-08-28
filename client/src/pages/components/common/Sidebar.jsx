@@ -33,28 +33,28 @@ export default function Sidebar() {
     const { data: userData } = useQuery({ queryKey: ['authUser'] })
     return (
         <div className='h-screen sticky top-0 left-0'>
-            <div className='flex flex-col gap-5 mt-[10rem] ml-[1rem] mr-[1rem] lg:ml-[2rem] lg:mr-[2rem] xl:ml-[5rem] xl:mr-[5rem]'>
+            <div className='flex flex-col gap-8 mt-[10rem] ml-[1rem] mr-[1rem] lg:ml-[2rem] lg:mr-[2rem] xl:ml-[5rem] xl:mr-[5rem]'>
                 <Link to="/">
-                    <div className='flex justify-left items-center gap-4 px-2 py-2 lg:px-4 lg:py-2 rounded-lg text-center text-xl hover:bg-neutral hover:text-white'>
+                    <div className='transition transform border-2 border-neutral rounded-tl-lg rounded-br-lg flex justify-left items-center gap-4 px-2 py-2 lg:px-4 lg:py-2 text-center text-xl hover:bg-neutral hover:text-white'>
                         <MdHomeFilled className='w-7 h-7' />
                         <div className='hidden lg:block'>Home</div>
                     </div>
                 </Link>
                 <Link to="/notifications">
-                    <div className='flex justify-left items-center gap-4 px-2 py-2 lg:px-4 lg:py-2 rounded-lg text-center text-xl hover:bg-neutral hover:text-white'>
+                    <div className='transition transform border-2 border-neutral rounded-tl-lg rounded-br-lg flex justify-left items-center gap-4 px-1 py-2 lg:px-4 lg:py-2 text-center text-xl hover:bg-neutral hover:text-white'>
                         <MdNotifications className='w-7 h-7' />
                         <div className='hidden lg:block'>Notification</div>
                     </div>
                 </Link>
                 <Link to={`/profile/${userData?.username}`}>
-                    <div className='flex justify-left items-center gap-4 px-2 py-2 lg:px-4 lg:py-2 rounded-lg text-center text-xl hover:bg-neutral hover:text-white ml-1'>
+                    <div className='transition transform border-2 border-neutral rounded-tl-lg rounded-br-lg flex justify-left items-center gap-4 px-2 py-2 lg:px-4 lg:py-2 text-center text-xl hover:bg-neutral hover:text-white ml-1'>
                         <FaRegUser className='w-6 h-6' />
                         <div className='hidden lg:block'>Profile</div>
                     </div>
                 </Link>
             </div>
 
-            <div className='absolute bottom-3 mr-auto ml-auto left-0 right-0 w-[70%] hover:bg-neutral hover:text-white border-2 border-neutral rounded-lg'>
+            <div className='absolute bottom-3 mr-auto ml-auto left-0 right-0 w-[80%] hover:bg-neutral hover:text-white border-2 border-neutral rounded-lg'>
                 <div className='flex justify-center lg:justify-around item-center h-full border-none p-0 lg:p-2 rounded-lg lg:flex-row flex-col'>
                     <Link to={`/profile/${userData?.username}`}>
                         <div className='flex gap-2'>
