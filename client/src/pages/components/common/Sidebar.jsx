@@ -58,8 +58,8 @@ export default function Sidebar() {
                 <div className='flex justify-center lg:justify-around item-center h-full border-none p-0 lg:p-2 rounded-lg lg:flex-row flex-col'>
                     <Link to={`/profile/${userData?.username}`}>
                         <div className='flex gap-2'>
-                            <div className='w-12'>
-                                <img src={userData.profileImg || "/avatar-placeholder.png"} alt="" className='rounded-full' />
+                            <div>
+                                <img src={userData.profileImg || "/avatar-placeholder.png"} alt="" className='rounded-full w-12 h-12' />
                             </div>
                             <div>
                                 <p className='font-medium hidden lg:block'>{userData.fullName}</p>
