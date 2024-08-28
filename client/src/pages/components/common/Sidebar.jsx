@@ -59,7 +59,7 @@ export default function Sidebar() {
                     <Link to={`/profile/${userData?.username}`}>
                         <div className='flex gap-2'>
                             <div className='w-12'>
-                                <img src={userData.avatar || "/avatar-placeholder.png"} alt="" className='rounded-full' />
+                                <img src={userData.profileImg || "/avatar-placeholder.png"} alt="" className='rounded-full' />
                             </div>
                             <div>
                                 <p className='font-medium hidden lg:block'>{userData.fullName}</p>
