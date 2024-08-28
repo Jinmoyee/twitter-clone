@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import userProfile from "../hooks/userProfile";
 
 const EditProfileModal = ({ authUser }) => {
 
@@ -15,36 +16,7 @@ const EditProfileModal = ({ authUser }) => {
         currentPassword: "",
     });
 
-    const { mutate: updateProfileForm, isPending: isUpdatingProfile } = useMutation({
-        mutationFn: async () => {
-            try {
-                const res = await fetch(`/api/users/update`, {
-                    method: "POST",
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(formData),
-                });
-                const data = await res.json();
-                if (!res.ok) {
-                    throw new Error(data.error || "Failed to update profile");
-                }
-                return data;
-            } catch (error) {
-                throw new Error(error.message);
-            }
-        },
-        onSuccess: () => {
-            toast.success("Profile updated successfully");
-            Promise.all([
-                queryClient.invalidateQueries({ queryKey: ["authUser"] }),
-                queryClient.invalidateQueries({ queryKey: ["userProfile"] })
-            ])
-        },
-        onError: () => {
-            toast.error("Failed to update profile");
-        }
-    })
+    const { updateProfile, isUpdatingProfile } = userProfile()
 
     const handleInputChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -78,7 +50,7 @@ const EditProfileModal = ({ authUser }) => {
                         className='flex flex-col gap-4'
                         onSubmit={(e) => {
                             e.preventDefault();
-                            updateProfileForm()
+                            updateProfile(formData)
                         }}
                     >
                         <div className='flex flex-wrap gap-2'>

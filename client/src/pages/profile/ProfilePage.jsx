@@ -15,6 +15,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { formatMemberSinceDate } from "../../utils/dates";
 import useFollow from "../hooks/useFollow";
 import toast from "react-hot-toast";
+import userProfile from "../hooks/userProfile";
 
 const ProfilePage = () => {
     // useQuery({ queryKey: ["authUser"] })
@@ -51,39 +52,7 @@ const ProfilePage = () => {
         }
     })
 
-    const { mutate: updateProfile, isPending: isUpdatingProfile } = useMutation({
-        mutationFn: async () => {
-            try {
-                const res = await fetch(`/api/users/update`, {
-                    method: "POST",
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        coverImg,
-                        profileImg,
-                    }),
-                });
-                const data = await res.json();
-                if (!res.ok) {
-                    throw new Error(data.error || "Failed to update profile");
-                }
-                return data;
-            } catch (error) {
-                throw new Error(error.message);
-            }
-        },
-        onSuccess: () => {
-            toast.success("Profile updated successfully");
-            Promise.all([
-                queryClient.invalidateQueries({ queryKey: ["authUser"] }),
-                queryClient.invalidateQueries({ queryKey: ["userProfile"] })
-            ])
-        },
-        onError: () => {
-            toast.error("Failed to update profile");
-        }
-    })
+    const { updateProfile, isUpdatingProfile } = userProfile()
 
 
     const isMyProfile = authUser._id === user?._id;
@@ -155,7 +124,7 @@ const ProfilePage = () => {
                                 <div className='avatar absolute -bottom-16 left-4'>
                                     <div className='w-32 rounded-full relative group/avatar'>
                                         <img src={profileImg || user?.profileImg || "/avatar-placeholder.png"} />
-                                        <div className='absolute top-5 right-3 p-1 bg-primary rounded-full group-hover /avatar:opacity-100 opacity-0 cursor-pointer'>
+                                        <div className='absolute top-5 right-5 p-1 bg-primary rounded-full group-hover/avatar:opacity-100 opacity-0 cursor-pointer'>
                                             {isMyProfile && (
                                                 <MdEdit
                                                     className='w-4 h-4 text-white'
@@ -181,7 +150,11 @@ const ProfilePage = () => {
                                 {(coverImg || profileImg) && (
                                     <button
                                         className='btn text-neutral border border-neutral hover:bg-amber-950 hover:text-white hover:opacity-90 rounded-full btn-sm ml-2'
-                                        onClick={() => updateProfile()}
+                                        onClick={async () => {
+                                            await updateProfile({ coverImg, profileImg });
+                                            setProfileImg(null);
+                                            setCoverImg(null);
+                                        }}
                                     >
                                         {isUpdatingProfile ? "Updating..." : "Save"}
                                     </button>
@@ -206,7 +179,7 @@ const ProfilePage = () => {
                                                     rel='noreferrer'
                                                     className='text-sm text-blue-500 hover:underline'
                                                 >
-                                                    youtube.com/@asaprogrammer_
+                                                    {user?.link || ""}
                                                 </a>
                                             </>
                                         </div>

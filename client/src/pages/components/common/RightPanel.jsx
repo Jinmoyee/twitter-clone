@@ -14,7 +14,7 @@ export default function RightPanel() {
                 const response = await fetch('/api/users/suggested')
                 const data = await response.json()
                 if (!response.ok) {
-                    throw new Error(data.message || 'Failed to fetch suggested users')
+                    throw new Error(data.error || 'Failed to fetch suggested users')
                 }
                 return data
             } catch (err) {
