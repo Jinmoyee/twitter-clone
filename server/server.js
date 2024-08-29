@@ -8,10 +8,11 @@ import connectMongoDb from "./db/mongoDbConnect.js"
 import cookieParser from "cookie-parser";
 import { v2 as cloudinary } from "cloudinary"
 import cors from "cors"
+import path from "path";
 
 
-dotenv.config();
-
+dotenv.config({ path: '../.env' });
+const __dirname = path.resolve();
 
 cloudinary.config(
     {
@@ -34,6 +35,11 @@ app.use("/api/auth", authRoutes)
 app.use("/api/users", userRoutes)
 app.use("/api/post", postRoutes)
 app.use("/api/notification", notificationRoutes)
+
+app.get("/", (req, res) => {
+    app.use(express.static(path.resolve(__dirname, "client", "dist")))
+    res.sendFile(path.resolve(__dirname, "client", "dist", "index.html"))
+})
 
 app.listen("1000", () => {
     console.log("Server is running on port 1000");
