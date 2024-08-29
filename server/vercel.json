@@ -1,11 +1,11 @@
 {
   "builds": [
     {
-      "src": "./server/server.js",
+      "src": "server/server.js",
       "use": "@vercel/node"
     },
     {
-      "src": "./server/client/package.json",
+      "src": "server/client/package.json",
       "use": "@vercel/static-build",
       "config": {
         "distDir": "server/client/dist"
