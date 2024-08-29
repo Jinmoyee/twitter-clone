@@ -12,8 +12,9 @@ import path from "path";
 import fs from "fs";
 import url from "url";
 
-dotenv.config({ path: '../.env' });
-const __dirname = path.resolve();
+dotenv.config();
+// { path: '../.env' }
+// const __dirname = path.resolve();
 
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_NAME,
@@ -33,7 +34,7 @@ app.use("/api/post", postRoutes);
 app.use("/api/notification", notificationRoutes);
 
 // Serve static files from the 'dist' directory
-app.use(express.static(path.join(__dirname, "client", "dist")));
+// app.use(express.static(path.join(__dirname, "client", "dist")));
 
 app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "client", "dist", "index.html"));
