@@ -88,7 +88,7 @@ export const getSuggestedUser = async (req, res) => {
 
 export const updateUser = async (req, res) => {
     try {
-        const { username, fullName, email, password, resetPassword, bio, link } = req.body
+        const { username, fullName, email, password, resetPassword, bio, link, location } = req.body
         let { profileImg, coverImg } = req.body
 
         const userId = req.user._id
@@ -136,6 +136,7 @@ export const updateUser = async (req, res) => {
         user.email = email || user.email
         user.bio = bio || user.bio
         user.link = link || user.link
+        user.location = location || user.location
         user.profileImg = profileImg || user.profileImg
         user.coverImg = coverImg || user.coverImg
         user = await user.save()

@@ -7,9 +7,8 @@ import EditProfileModal from "./EditProfileModal";
 
 import { POSTS } from '../../utils/db/dummey'
 
-import { FaArrowLeft } from "react-icons/fa6";
+import { FaArrowLeft, FaMapMarkerAlt, FaLink } from "react-icons/fa";
 import { IoCalendarOutline } from "react-icons/io5";
-import { FaLink } from "react-icons/fa";
 import { MdEdit } from "react-icons/md";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { formatMemberSinceDate } from "../../utils/dates";
@@ -18,7 +17,6 @@ import toast from "react-hot-toast";
 import userProfile from "../hooks/userProfile";
 
 const ProfilePage = () => {
-    // useQuery({ queryKey: ["authUser"] })
     const [coverImg, setCoverImg] = useState(null);
     const [profileImg, setProfileImg] = useState(null);
     const [feedType, setFeedType] = useState("posts");
@@ -26,37 +24,30 @@ const ProfilePage = () => {
     const coverImgRef = useRef(null);
     const profileImgRef = useRef(null);
 
-    const queryClient = useQueryClient()
-
-    const { username } = useParams()
-
-    const { follow, isPending } = useFollow()
-
-    const { data: authUser } = useQuery({
-        queryKey: ["authUser"]
-    })
+    const queryClient = useQueryClient();
+    const { username } = useParams();
+    const { follow, isPending } = useFollow();
+    const { data: authUser } = useQuery({ queryKey: ["authUser"] });
 
     const { data: user, isLoading, refetch, isRefetching } = useQuery({
         queryKey: ['userProfile'],
         queryFn: async () => {
             try {
-                const res = await fetch(`/api/users/profile/${username}`)
-                const data = await res.json()
+                const res = await fetch(`/api/users/profile/${username}`);
+                const data = await res.json();
                 if (!res.ok) {
-                    throw new Error(data.error || "Failed to fetch user")
+                    throw new Error(data.error || "Failed to fetch user");
                 }
-                return data
+                return data;
             } catch (error) {
-                throw new Error(error.message)
+                throw new Error(error.message);
             }
         }
-    })
+    });
 
-    const { updateProfile, isUpdatingProfile } = userProfile()
-
-
+    const { updateProfile, isUpdatingProfile } = userProfile();
     const isMyProfile = authUser._id === user?._id;
-    const amIFollowing = authUser?.following.includes(user?._id)
+    const amIFollowing = authUser?.following.includes(user?._id);
 
     const handleImgChange = (e, state) => {
         const file = e.target.files[0];
@@ -71,13 +62,15 @@ const ProfilePage = () => {
     };
 
     useEffect(() => {
-        refetch()
-    }, [username, refetch])
+        refetch();
+        console.log(user)
+    }, [username, refetch]);
+
+    const googleMapsLink = `https://www.google.com/maps/search/?api=1&query=${user?.location}`;
 
     return (
         <>
-            <div className='flex-[4_4_0] border-x-[0.15rem] min-h-screen border-neutral'>
-                {/* HEADER */}
+            <div className='flex-[4_4_0] border-x min-h-screen'>
                 {(isLoading || isRefetching) && <ProfileHeaderSkeleton />}
                 {(!isLoading || !isRefetching) && !user && <p className='text-center text-lg mt-4'>User not found</p>}
                 <div className='flex flex-col'>
@@ -92,7 +85,6 @@ const ProfilePage = () => {
                                     <span className='text-sm text-slate-500'>{POSTS?.length} posts</span>
                                 </div>
                             </div>
-                            {/* COVER IMG */}
                             <div className='relative group/cover'>
                                 <img
                                     src={coverImg || user?.coverImg || "/cover.png"}
@@ -107,7 +99,6 @@ const ProfilePage = () => {
                                         <MdEdit className='w-5 h-5 text-white' />
                                     </div>
                                 )}
-
                                 <input
                                     type='file'
                                     hidden
@@ -120,9 +111,8 @@ const ProfilePage = () => {
                                     ref={profileImgRef}
                                     onChange={(e) => handleImgChange(e, "profileImg")}
                                 />
-                                {/* USER AVATAR */}
                                 <div className='avatar absolute -bottom-16 left-4'>
-                                    <div className='w-32 rounded-full relative group/avatar'>
+                                    <div className='w-32 border-2 border-black rounded-full relative group/avatar'>
                                         <img src={profileImg || user?.profileImg || "/avatar-placeholder.png"} />
                                         <div className='absolute top-5 right-5 p-1 bg-primary rounded-full group-hover/avatar:opacity-100 opacity-0 cursor-pointer'>
                                             {isMyProfile && (
@@ -149,7 +139,7 @@ const ProfilePage = () => {
                                 )}
                                 {(coverImg || profileImg) && (
                                     <button
-                                        className='btn text-neutral border border-neutral hover:bg-amber-950 hover:text-white hover:opacity-90 rounded-full btn-sm ml-2'
+                                        className='btn text-white bg-blue-400 hover:bg-blue-500 rounded-full btn-sm ml-2'
                                         onClick={async () => {
                                             await updateProfile({ coverImg, profileImg });
                                             setProfileImg(null);
@@ -174,7 +164,7 @@ const ProfilePage = () => {
                                             <>
                                                 <FaLink className='w-3 h-3 text-slate-500' />
                                                 <a
-                                                    href='https://youtube.com/@asaprogrammer_'
+                                                    href={user?.link}
                                                     target='_blank'
                                                     rel='noreferrer'
                                                     className='text-sm text-blue-500 hover:underline'
@@ -184,6 +174,21 @@ const ProfilePage = () => {
                                             </>
                                         </div>
                                     )}
+
+                                    {user?.location && (
+                                        <div className='flex gap-1 items-center'>
+                                            <FaMapMarkerAlt className='w-4 h-4 text-slate-500' />
+                                            <a
+                                                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(user?.location)}`}
+                                                target='_blank'
+                                                rel='noreferrer'
+                                                className='text-sm text-blue-500 hover:underline'
+                                            >
+                                                {user?.location}
+                                            </a>
+                                        </div>
+                                    )}
+
                                     <div className='flex gap-2 items-center'>
                                         <IoCalendarOutline className='w-4 h-4 text-slate-500' />
                                         <span className='text-base text-slate-500'>{formatMemberSinceDate(user?.createdAt)}</span>
@@ -200,33 +205,29 @@ const ProfilePage = () => {
                                     </div>
                                 </div>
                             </div>
-                            <div className='flex w-full border-b-[0.15rem] border-neutral mt-4'>
+                            <div className='flex w-full border-b mt-4'>
                                 <div
                                     className='flex justify-center flex-1 p-3 transition duration-300 relative cursor-pointer text-lg font-semibold'
                                     onClick={() => setFeedType("posts")}
                                 >
                                     Posts
-                                    {feedType === "posts" && (
-                                        <div className='absolute bottom-0 w-32 h-1.5 bg-primary' />
-                                    )}
+                                    {feedType === "posts" && <div className='absolute h-1 bg-blue-400 bottom-0 left-0 right-0'></div>}
                                 </div>
                                 <div
-                                    className='flex justify-center flex-1 p-3 text-slate-500 transition duration-300 relative cursor-pointer text-lg font-semibold'
+                                    className='flex justify-center flex-1 p-3 transition duration-300 relative cursor-pointer text-lg font-semibold'
                                     onClick={() => setFeedType("likes")}
                                 >
                                     Likes
-                                    {feedType === "likes" && (
-                                        <div className='absolute bottom-0 w-32 h-1.5 bg-primary' />
-                                    )}
+                                    {feedType === "likes" && <div className='absolute h-1 bg-blue-400 bottom-0 left-0 right-0'></div>}
                                 </div>
                             </div>
+                            <Posts posts={POSTS} />
                         </>
                     )}
-
-                    <Posts username={username} userId={user?._id} feedType={feedType} />
                 </div>
-            </div >
+            </div>
         </>
     );
 };
+
 export default ProfilePage;

@@ -4,8 +4,7 @@ import toast from "react-hot-toast";
 import userProfile from "../hooks/userProfile";
 
 const EditProfileModal = ({ authUser }) => {
-
-    const queryClient = useQueryClient()
+    const queryClient = useQueryClient();
     const [formData, setFormData] = useState({
         fullName: "",
         username: "",
@@ -14,12 +13,32 @@ const EditProfileModal = ({ authUser }) => {
         link: "",
         newPassword: "",
         currentPassword: "",
+        location: "",
     });
 
-    const { updateProfile, isUpdatingProfile } = userProfile()
+    const { updateProfile, isUpdatingProfile } = userProfile();
 
     const handleInputChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const getCurrentLocation = () => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const { latitude, longitude } = position.coords;
+                    setFormData((prev) => ({
+                        ...prev,
+                        location: `${latitude}, ${longitude}`,
+                    }));
+                },
+                (error) => {
+                    toast.error("Unable to retrieve location. Please try again.");
+                }
+            );
+        } else {
+            toast.error("Geolocation is not supported by this browser.");
+        }
     };
 
     useEffect(() => {
@@ -32,9 +51,11 @@ const EditProfileModal = ({ authUser }) => {
                 link: authUser.link,
                 newPassword: "",
                 currentPassword: "",
-            })
+                location: authUser.location || "", // Initialize location from authUser
+            });
         }
-    }, [authUser])
+    }, [authUser]);
+
     return (
         <>
             <button
@@ -50,7 +71,7 @@ const EditProfileModal = ({ authUser }) => {
                         className='flex flex-col gap-4'
                         onSubmit={(e) => {
                             e.preventDefault();
-                            updateProfile(formData)
+                            updateProfile(formData);
                         }}
                     >
                         <div className='flex flex-wrap gap-2'>
@@ -114,8 +135,25 @@ const EditProfileModal = ({ authUser }) => {
                             name='link'
                             onChange={handleInputChange}
                         />
-                        <button className='btn btn-primary rounded-full btn-sm text-white'>
-                            {isUpdatingProfile ? '...Updating' : 'Update'}
+                        <div className='flex flex-wrap gap-2'>
+                            <input
+                                type='text'
+                                placeholder='Location'
+                                className='flex-1 input border border-gray-700 rounded p-2 input-md'
+                                value={formData.location}
+                                name='location'
+                                onChange={handleInputChange}
+                            />
+                            <button
+                                type='button'
+                                className='btn bg-green-400 rounded-lg text-white hover:bg-green-500'
+                                onClick={getCurrentLocation}
+                            >
+                                Current Location
+                            </button>
+                        </div>
+                        <button className='btn bg-blue-400 rounded-full btn-sm text-white hover:bg-blue-500'>
+                            {isUpdatingProfile ? 'Updating' : 'Update'}
                         </button>
                     </form>
                 </div>
@@ -126,4 +164,5 @@ const EditProfileModal = ({ authUser }) => {
         </>
     );
 };
+
 export default EditProfileModal;

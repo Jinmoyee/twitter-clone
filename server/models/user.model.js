@@ -46,12 +46,36 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: ""
     },
+    location: {
+        type: String,
+        default: ""
+    },
     likedPosts: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Post',
         default: [],
-    }]
-}, { timestamps: true })
+    }],
+    // Subscription-related fields
+    subscriptionPlan: {
+        type: String,
+        enum: ['free', 'bronze', 'silver', 'gold'],
+        default: 'free'
+    },
+    subscriptionExpiration: {
+        type: Date,
+    },
+    tweetCount: {
+        type: Number,
+        default: 0
+    },
+    tweetLimit: {
+        type: Number,
+        default: 1  // Default for the 'free' plan
+    },
+    lastPaymentTime: {
+        type: Date,
+    },
+}, { timestamps: true });
 
 const User = mongoose.model('User', userSchema);
 

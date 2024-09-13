@@ -5,35 +5,61 @@ import { v2 as cloudinary } from "cloudinary"
 
 export const createPost = async (req, res) => {
     try {
-        const { text } = req.body
-        let { img } = req.body
-        const userId = req.user._id.toString()
+        const { text } = req.body;
+        let { img } = req.body;
+        const userId = req.user._id.toString();
 
-        const user = await User.findById(userId)
+        // Find the user
+        const user = await User.findById(userId);
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
         }
+
+        // Check if user has exceeded tweet limit
+        const currentDate = new Date();
+        const subscriptionExpiration = user.subscriptionExpiration;
+
+        // Check if the subscription has expired (optional)
+        if (subscriptionExpiration && currentDate > subscriptionExpiration) {
+            return res.status(403).json({ error: 'Your subscription has expired. Please renew your plan to continue posting.' });
+        }
+
+        if (user.tweetCount >= user.tweetLimit) {
+            return res.status(403).json({ error: `You have reached your tweet limit for the ${user.subscriptionPlan} plan. Upgrade your plan or wait for the next period.` });
+        }
+
+        // Validate input (text or image must be provided)
         if (!text && !img) {
             return res.status(400).json({ error: 'Please provide text or an image' });
         }
 
+        // If there's an image, upload it to Cloudinary
         if (img) {
-            const uploadImg = await cloudinary.uploader.upload(img)
-            img = uploadImg.secure_url
+            const uploadImg = await cloudinary.uploader.upload(img);
+            img = uploadImg.secure_url;
         }
 
+        // Create a new post
         const newPost = new Post({
             user: userId,
             text: text,
             img: img,
-        })
+        });
 
-        await newPost.save()
+        // Save the post in the database
+        await newPost.save();
+
+        // Increment the user's tweet count after successfully creating a post
+        user.tweetCount += 1;
+        await user.save();
+
+        // Respond with the new post
         res.status(201).json(newPost);
     } catch (err) {
-        return res.status(500).json(err.message)
+        return res.status(500).json({ error: err.message });
     }
-}
+};
+
 
 export const deletePost = async (req, res) => {
     try {

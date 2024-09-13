@@ -137,9 +137,9 @@ const Post = ({ post }) => {
 
     return (
         <>
-            <div className='flex gap-2 items-start p-4 border-b-[0.15rem] border-neutral'>
+            <div className='flex gap-2 items-start p-4 border-b'>
                 <div className='avatar'>
-                    <Link to={`/profile/${postOwner.username}`} className='w-8 rounded-full overflow-hidden'>
+                    <Link to={`/profile/${postOwner.username}`} className='w-8 rounded-full overflow-hidden border-2 border-black'>
                         <img src={postOwner.profileImg || "/avatar-placeholder.png"} />
                     </Link>
                 </div>
@@ -166,7 +166,7 @@ const Post = ({ post }) => {
                         {post.img && (
                             <img
                                 src={post.img}
-                                className='h-80 object-contain rounded-lg border-2 border-neutral'
+                                className='h-80 object-contain rounded-lg border-2'
                                 alt=''
                             />
                         )}

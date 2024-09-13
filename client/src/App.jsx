@@ -10,6 +10,15 @@ import ProfilePage from './pages/profile/ProfilePage';
 import { Toaster } from 'react-hot-toast';
 import { useQuery } from '@tanstack/react-query';
 import LoadingSpinner from './pages/components/common/LoadingSpinner';
+import ExplorerPage from './pages/dummy/ExplorerPage';
+import MessagePage from './pages/dummy/MessagePage';
+import BookmarksPage from './pages/dummy/BookmarksPage';
+import ListPage from './pages/dummy/ListPage';
+// import SubscriptionPage from './pages/dummy/SubscriptionPage';
+import MorePage from './pages/dummy/MorePage';
+import SubscriptionPage from './pages/subscription/SubscriptionPage';
+import Success from './pages/subscription/pages/Success';
+import Error from './pages/subscription/pages/Error';
 
 export default function App() {
   const { data: authUser, isLoading } = useQuery({
@@ -40,7 +49,7 @@ export default function App() {
     )
   }
   return (
-    <div data-theme="retro" className='flex justify-around'>
+    <div data-theme="pastel" className='flex justify-around'>
       {authUser && <Sidebar />}
       <Routes>
         <Route path="/" element={authUser ? <HomePage /> : <Navigate to="/login" />} />
@@ -48,6 +57,14 @@ export default function App() {
         <Route path="/signup" element={!authUser ? <SignUpPage /> : <Navigate to="/" />} />
         <Route path="/notifications" element={authUser ? <NotificationPage /> : <Navigate to="/login" />} />
         <Route path="/profile/:username" element={authUser ? <ProfilePage /> : <Navigate to="/login" />} />
+        <Route path="/explorer" element={authUser ? <ExplorerPage /> : <Navigate to="/login" />} />
+        <Route path="/messages" element={authUser ? <MessagePage /> : <Navigate to="/login" />} />
+        <Route path="/bookmarks" element={authUser ? <BookmarksPage /> : <Navigate to="/login" />} />
+        <Route path="/lists" element={authUser ? <ListPage /> : <Navigate to="/login" />} />
+        <Route path="/subscribe" element={authUser ? <SubscriptionPage /> : <Navigate to="/login" />} />
+        <Route path="/payment-success" element={authUser ? <Success /> : <Navigate to="/login" />} />
+        <Route path="/payment-failed" element={authUser ? <Error /> : <Navigate to="/login" />} />
+        <Route path="/more" element={authUser ? <MorePage /> : <Navigate to="/login" />} />
       </Routes>
       {authUser && <RightPanel />}
       <Toaster />
