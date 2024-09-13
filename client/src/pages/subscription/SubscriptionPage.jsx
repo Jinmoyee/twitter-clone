@@ -23,30 +23,40 @@ const SubscriptionPage = () => {
             return;
         }
 
+        if (!selectedPlan) {
+            toast.error('Please select a plan.');
+            return;
+        }
+
         try {
             const stripe = await stripePromise;
 
             // Send selectedPlan to your backend to create a Checkout session
-            const res = await fetch('/api/stripe/create-checkout-session', {
+            const res = await fetch('/api/stripe/checkout', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-                    planId: selectedPlan.priceId,  // Stripe price ID
-                }),
+                body: JSON.stringify({ planId: selectedPlan.priceId }),
             });
+
+            // Log the response status and body for debugging
+            console.log('Response Status:', res.status);
+            const responseJson = await res.json();
+            console.log('Response Body:', responseJson);
 
             if (!res.ok) {
-                throw new Error('Failed to initiate checkout session.');
+                throw new Error(`Failed to initiate checkout session. Status: ${res.status}. Response: ${responseJson.message}`);
             }
 
-            const { id: sessionId } = await res.json();
+            const { id: sessionId } = responseJson;
+
+            if (!sessionId) {
+                throw new Error('Session ID not found in response.');
+            }
 
             // Redirect to Stripe checkout
-            const result = await stripe.redirectToCheckout({
-                sessionId,
-            });
+            const result = await stripe.redirectToCheckout({ sessionId });
 
             if (result.error) {
                 toast.error(result.error.message);
@@ -56,10 +66,12 @@ const SubscriptionPage = () => {
             }
         } catch (error) {
             console.error('Error processing payment:', error);
-            toast.error('Error processing payment. Please try again.');
+            toast.error(`Error processing payment: ${error.message}`);
             navigate('/payment-failed');  // Navigate to a failure page
         }
     };
+
+
 
     return (
         <div className="min-h-screen items-center justify-center flex-[4_4_0] border-x w-full px-[10rem] py-6">

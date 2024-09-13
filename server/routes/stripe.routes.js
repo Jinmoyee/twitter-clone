@@ -4,6 +4,6 @@ import { verifyToken } from '../middleware/verifyToken.js';
 
 const router = express.Router()
 
-router.post("/create-checkout-session", verifyToken, paymentMethod)
+router.post("/checkout", verifyToken, paymentMethod)
 
 export default router
