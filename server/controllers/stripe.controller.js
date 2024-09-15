@@ -10,6 +10,14 @@ export const paymentMethod = async (req, res) => {
     const { planId } = req.body;
     const userId = req.user._id;
 
+    // Define tweet limits based on the plan
+    const tweetLimits = {
+        'price_1PzQo72MeAP7D6CVFKjcTS2C': 1,  // Free Plan
+        'price_1PzQq92MeAP7D6CVV9OwmuFy': 3,  // Bronze Plan
+        'price_1PzQpi2MeAP7D6CVCW9K1u1F': 5,  // Silver Plan
+        'price_1PzQpA2MeAP7D6CV56DUmsQW': 9999999999999999999999999,  // Gold Plan
+    };
+
     try {
         const user = await User.findById(userId);
         if (!user) {
@@ -31,10 +39,14 @@ export const paymentMethod = async (req, res) => {
             cancel_url: `http://localhost:3000/payment-cancel`, // Replace with your front-end cancel URL
         });
 
+        // Update user's tweet limit based on selected plan
+        user.tweetLimit = tweetLimits[planId]; // Update the tweet limit in the database
+        await user.save();
+
         // Send success response to the frontend
         return res.status(200).json({
             success: true,
-            message: 'Checkout session created successfully',
+            message: 'Checkout session created successfully, tweet limit updated',
             id: session.id,
         });
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
@@ -7,8 +7,8 @@ const stripePromise = loadStripe("pk_test_51Pyfg82MeAP7D6CVQyPZBdPIxJ9aEx7mOYVcg
 
 const SubscriptionPage = () => {
     const [selectedPlan, setSelectedPlan] = useState(null);
-    const [isPaymentAllowed, setIsPaymentAllowed] = useState(true); // Always allow payment
-    const navigate = useNavigate();  // Initialize navigate hook
+    const [isPaymentAllowed, setIsPaymentAllowed] = useState(true); // Default to true initially
+    const navigate = useNavigate();
 
     const plans = [
         { name: 'Free Plan', price: '₹0', tweets: 1, priceId: 'price_1PzQo72MeAP7D6CVFKjcTS2C' },
@@ -17,6 +17,25 @@ const SubscriptionPage = () => {
         { name: 'Gold Plan', price: '₹1000/month', tweets: 'Unlimited', priceId: 'price_1PzQpA2MeAP7D6CV56DUmsQW' },
     ];
 
+    useEffect(() => {
+        const checkPaymentWindow = () => {
+            const now = new Date();
+            const hours = now.getUTCHours() + 5.5; // Convert to IST (UTC+5:30)
+            const minutes = now.getUTCMinutes();
+            if (hours >= 10 && hours < 11) {
+                setIsPaymentAllowed(true);
+            } else if (hours === 10 && minutes === 0) { // Special case for exactly 10 AM to allow payments
+                setIsPaymentAllowed(true);
+            } else {
+                setIsPaymentAllowed(false);
+            }
+        };
+
+        checkPaymentWindow();
+        const intervalId = setInterval(checkPaymentWindow, 60000); // Check every minute
+
+        return () => clearInterval(intervalId); // Clean up interval on component unmount
+    }, []);
 
     const handlePayment = async () => {
         if (!isPaymentAllowed) {
@@ -41,7 +60,6 @@ const SubscriptionPage = () => {
                 body: JSON.stringify({ planId: selectedPlan.priceId }),
             });
 
-            // Log the response status and body for debugging
             console.log('Response Status:', res.status);
             const responseJson = await res.json();
             console.log('Response Body:', responseJson);
@@ -61,18 +79,16 @@ const SubscriptionPage = () => {
 
             if (result.error) {
                 toast.error(result.error.message);
-                navigate('/payment-failed');  // Navigate to a failure page
+                navigate('/payment-failed');
             } else {
                 toast.success('Redirecting to payment...');
             }
         } catch (error) {
             console.error('Error processing payment:', error);
             toast.error(`Error processing payment: ${error.message}`);
-            navigate('/payment-failed');  // Navigate to a failure page
+            navigate('/payment-failed');
         }
     };
-
-
 
     return (
         <div className="min-h-screen items-center justify-center flex-[4_4_0] border-x w-full px-[10rem] py-6">
