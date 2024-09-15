@@ -11,11 +11,12 @@ const SubscriptionPage = () => {
     const navigate = useNavigate();  // Initialize navigate hook
 
     const plans = [
-        { name: 'Free Plan', price: '₹0', tweets: 1, priceId: 'free_plan_price_id' },
-        { name: 'Bronze Plan', price: '₹100/month', tweets: 3, priceId: 'bronze_plan_price_id' },
-        { name: 'Silver Plan', price: '₹300/month', tweets: 5, priceId: 'silver_plan_price_id' },
-        { name: 'Gold Plan', price: '₹1000/month', tweets: 'Unlimited', priceId: 'gold_plan_price_id' },
+        { name: 'Free Plan', price: '₹0', tweets: 1, priceId: 'price_1PzQo72MeAP7D6CVFKjcTS2C' },
+        { name: 'Bronze Plan', price: '₹100/month', tweets: 3, priceId: 'price_1PzQq92MeAP7D6CVV9OwmuFy' },
+        { name: 'Silver Plan', price: '₹300/month', tweets: 5, priceId: 'price_1PzQpi2MeAP7D6CVCW9K1u1F' },
+        { name: 'Gold Plan', price: '₹1000/month', tweets: 'Unlimited', priceId: 'price_1PzQpA2MeAP7D6CV56DUmsQW' },
     ];
+
 
     const handlePayment = async () => {
         if (!isPaymentAllowed) {
