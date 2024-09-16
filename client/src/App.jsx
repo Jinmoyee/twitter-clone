@@ -63,7 +63,7 @@ export default function App() {
         <Route path="/lists" element={authUser ? <ListPage /> : <Navigate to="/login" />} />
         <Route path="/subscribe" element={authUser ? <SubscriptionPage /> : <Navigate to="/login" />} />
         <Route path="/payment-success" element={authUser ? <Success /> : <Navigate to="/login" />} />
-        <Route path="/payment-failed" element={authUser ? <Error /> : <Navigate to="/login" />} />
+        <Route path="/payment-cancel" element={authUser ? <Error /> : <Navigate to="/login" />} />
         <Route path="/more" element={authUser ? <MorePage /> : <Navigate to="/login" />} />
       </Routes>
       {authUser && <RightPanel />}

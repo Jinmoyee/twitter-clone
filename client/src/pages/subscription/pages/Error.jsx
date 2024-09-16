@@ -3,14 +3,14 @@ import { Link } from 'react-router-dom';
 
 const Error = () => {
     return (
-        <div className="min-h-screen flex items-center justify-center bg-red-100">
-            <div className="text-center p-6 bg-white shadow-md rounded-lg border-2 border-red-300">
-                <h1 className="text-3xl font-bold text-red-600 mb-4">Payment Failed</h1>
-                <p className="text-lg text-gray-700 mb-4">Something went wrong with your payment. Please try again later.</p>
-                <p className="text-md text-gray-500 mb-6">If the issue persists, contact support for assistance.</p>
-                <Link to="/" className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300">
-                    Go to Home
-                </Link>
+        <div className='flex-[4_4_0] border-x min-h-screen w-full'>
+            <div className="flex justify-center items-center h-full">
+                <div className='border-2 rounded-lg p-3 border-red-500 flex items-center flex-col gap-2 m-5'>
+                    <h3 className='text-red-500 p-3 text-3xl'>Payment failed</h3>
+                    <Link to="/">
+                        <button className='btn bg-blue-500 text-white p-2 rounded-lg'>Back to Home Page</button>
+                    </Link>
+                </div>
             </div>
         </div>
     );
