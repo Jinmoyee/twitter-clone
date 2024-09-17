@@ -43,7 +43,7 @@ app.use("/api/stripe", stripe);
 // });
 
 app.get("/", (req, res) => {
-    res.status("Hello")
+    res.send("Hello")
 })
 
 app.listen(1000, () => {
