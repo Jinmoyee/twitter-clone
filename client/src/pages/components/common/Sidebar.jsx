@@ -97,7 +97,7 @@ export default function Sidebar() {
                 </Link>
             </div>
 
-            <div className='absolute bottom-3 mr-auto ml-auto left-0 right-0 w-[80%]'>
+            <div className='absolute bottom-3 mr-auto ml-auto left-0 right-0 w-[100%] overflow-hidden'>
                 <div className='flex justify-center lg:justify-around item-center h-full border-none p-0 lg:p-2 rounded-lg lg:flex-row flex-col'>
                     <Link to={`/profile/${userData?.username}`}>
                         <div className='flex gap-2'>
@@ -105,8 +105,8 @@ export default function Sidebar() {
                                 <img src={userData.profileImg || "/avatar-placeholder.png"} alt="" className='rounded-full w-12 h-12 border-2 border-black' />
                             </div>
                             <div>
-                                <p className='font-medium hidden lg:block'>{userData.fullName}</p>
-                                <p className='hidden lg:block'>@{userData.username}</p>
+                                <p className='w-[90%] overflow-hidden truncate font-medium hidden lg:block'>{userData.fullName}</p>
+                                <p className='w-[80%] overflow-hidden truncate hidden lg:block'>@{userData.username}</p>
                             </div>
                         </div>
                     </Link>
