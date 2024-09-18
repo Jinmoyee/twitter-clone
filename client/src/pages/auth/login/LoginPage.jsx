@@ -5,8 +5,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import twitter_ath from "../../../../public/twitter_auth.jpg";
 import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
 import app from '../../context/firebase';
-
 export default function LoginPage() {
+    const apiUrl = import.meta.env.VITE_API_URL;
     const [formData, setFormData] = useState({
         username: '',
         password: ''
@@ -18,7 +18,7 @@ export default function LoginPage() {
     const { mutate, isError, isLoading, error } = useMutation({
         mutationFn: async ({ username, password }) => {
             try {
-                const res = await fetch('/api/auth/login', {
+                const res = await fetch(`${apiUrl}/api/auth/login`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ username, password })
@@ -51,7 +51,7 @@ export default function LoginPage() {
                 const auth = getAuth(app);
                 const result = await signInWithPopup(auth, provider);
 
-                const res = await fetch("/api/auth/google", {
+                const res = await fetch(`${apiUrl}/api/auth/google`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
