@@ -5,6 +5,6 @@ export const generateTokenAndSetCookie = (userId, res) => {
     res.cookie("jwt", token, {
         expires: new Date(Date.now() + 3600000 * 24 * 30), // 30 days
         httpOnly: true,
-        sameSite: "strict",
+        sameSite: "none",
     });
 }
