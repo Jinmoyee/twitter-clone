@@ -12,7 +12,7 @@ import LoadingSpinner from "./LoadingSpinner";
 import { formatPostDate } from "../../../utils/dates";
 
 const Post = ({ post }) => {
-    const apiUrl = import.meta.env.VITE_API_URL;
+
     const [comment, setComment] = useState("");
     const { data: authUser } = useQuery({ queryKey: ["authUser"] })
     const queryClient = useQueryClient()
@@ -20,7 +20,7 @@ const Post = ({ post }) => {
     const { mutate: deletePost, isPending } = useMutation({
         mutationFn: async () => {
             try {
-                const res = await fetch(`${apiUrl}/api/post/${post._id}`, {
+                const res = await fetch(`/api/post/${post._id}`, {
                     method: 'DELETE',
                     headers: { 'Content-Type': 'application/json' },
                 });
@@ -43,7 +43,7 @@ const Post = ({ post }) => {
     const { mutate: likePost, isPending: isLiking } = useMutation({
         mutationFn: async () => {
             try {
-                const res = await fetch(`${apiUrl}/api/post/like/${post._id}`, {
+                const res = await fetch(`/api/post/like/${post._id}`, {
                     method: 'POST',
                 });
                 const data = await res.json();
@@ -77,7 +77,7 @@ const Post = ({ post }) => {
     const { mutate: commentPost, isPending: isCommenting } = useMutation({
         mutationFn: async () => {
             try {
-                const res = await fetch(`${apiUrl}/api/post/comment/${post._id}`, {
+                const res = await fetch(`/api/post/comment/${post._id}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

@@ -15,14 +15,14 @@ import toast from 'react-hot-toast'
 import twitter from "../../../../public/twitter.png"
 
 export default function Sidebar() {
-    const apiUrl = import.meta.env.VITE_API_URL;
+
     const queryClient = useQueryClient()
 
     const { mutate: loggedOut, isError, isPending, error } = useMutation({
         mutationFn: async () => {
             try {
                 // Simulate a server request
-                const res = await fetch(`${apiUrl}/api/auth/logout`, {
+                const res = await fetch(`/api/auth/logout`, {
                     method: 'POST',
                 })
                 const data = await res.json()

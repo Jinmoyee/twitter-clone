@@ -7,7 +7,7 @@ import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
 import app from '../../context/firebase';
 
 export default function SignUpPage() {
-    const apiUrl = import.meta.env.VITE_API_URL;
+
     const [formData, setFormData] = useState({
         email: '',
         username: '',
@@ -22,7 +22,7 @@ export default function SignUpPage() {
     const { mutate, isError, isPending, error } = useMutation({
         mutationFn: async ({ email, username, fullName, password }) => {
             try {
-                const res = await fetch(`${apiUrl}/api/auth/signup`, {
+                const res = await fetch(`/api/auth/signup`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, username, fullName, password })
@@ -54,7 +54,7 @@ export default function SignUpPage() {
                 const auth = getAuth(app);
                 const result = await signInWithPopup(auth, provider);
 
-                const res = await fetch(`${apiUrl}/api/auth/google`, {
+                const res = await fetch(`/api/auth/google`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
