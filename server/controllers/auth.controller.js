@@ -75,55 +75,6 @@ export const login = async (req, res) => {
     }
 }
 
-
-export const google = async (req, res) => {
-    try {
-        // Check if user already exists
-        const user = await User.findOne({ email: req.body.email });
-        if (user) {
-            // If the user exists, generate a JWT and set it in the cookie
-            generateTokenAndSetCookie(user._id, res);
-            return res.status(200).json({
-                _id: user._id,
-                username: user.username,
-                fullName: user.fullName,
-                email: user.email,
-                followers: user.followers,
-                following: user.following,
-                profileImg: user.profileImg,
-                coverImg: user.coverImg
-            });
-        } else {
-            // If user doesn't exist, create a new user
-            const generatePassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8);
-            const hashPassword = bcrypt.hashSync(generatePassword, 10);
-            const newUser = new User({
-                username: req.body.name.split(" ").join("").toLowerCase() + Math.random().toString(36).slice(-4),
-                email: req.body.email,
-                password: hashPassword,
-                profileImg: req.body.photo,  // Assuming profile image is provided in the body
-                fullName: req.body.name
-            });
-            await newUser.save();
-
-            // Generate token for new user and set in cookie
-            generateTokenAndSetCookie(newUser._id, res);
-            return res.status(200).json({
-                _id: newUser._id,
-                username: newUser.username,
-                fullName: newUser.fullName,
-                email: newUser.email,
-                followers: newUser.followers,
-                following: newUser.following,
-                profileImg: newUser.profileImg,
-                coverImg: newUser.coverImg
-            });
-        }
-    } catch (error) {
-        return res.status(500).json({ error: "Internal Server Error" });
-    }
-};
-
 export const logout = async (req, res) => {
     try {
         res.clearCookie("jwt");
@@ -141,4 +92,3 @@ export const getMe = async (req, res) => {
         res.status(500).json({ error: "Internal Server Error" })
     }
 }
-

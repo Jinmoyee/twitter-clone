@@ -5,17 +5,17 @@ import { Link, useNavigate } from 'react-router-dom';
 import twitter_ath from "../../../../public/twitter_auth.jpg";
 import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
 import app from '../../context/firebase';
+
 export default function LoginPage() {
 
     const [formData, setFormData] = useState({
         username: '',
         password: ''
-    });
+    })
 
-    const queryClient = useQueryClient();
-    const navigate = useNavigate();
+    const queryClient = useQueryClient()
 
-    const { mutate, isError, isLoading, error } = useMutation({
+    const { mutate, isError, isPending, error } = useMutation({
         mutationFn: async ({ username, password }) => {
             try {
                 const res = await fetch('/api/auth/login', {
@@ -51,7 +51,7 @@ export default function LoginPage() {
                 const auth = getAuth(app);
                 const result = await signInWithPopup(auth, provider);
 
-                const res = await fetch(`/api/auth/google`, {
+                const res = await fetch("/api/auth/google", {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -65,51 +65,39 @@ export default function LoginPage() {
 
                 const data = await res.json();
                 if (data.error) {
-                    throw new Error(data.error);
+                    throw new Error(data.error)
                 }
-
-                return data; // Return data to be handled in onSuccess
+                console.log(data)
+                toast.success('Logged In successfully')
+                return data
             } catch (error) {
-                console.error("Could not connect with Google", error);
-                toast.error("Google authentication failed.");
-                throw error; // Re-throw the error for onError and React Query handling
+                console.error(error)
+                toast.error(error.message)
             }
         },
-        onSuccess: (data) => {
-            queryClient.invalidateQueries({ queryKey: ['authUser'] });
-            navigate('/'); // Navigate to home on successful login
-            toast.success('Logged In successfully');
-        },
-        onError: (error) => {
-            console.error(error);
-            toast.error(error.message || "Google authentication failed.");
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["authUser"] })
         }
-    });
-
+    })
 
     const handleInputChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
-
-    const handleFormSubmit = (e) => {
-        e.preventDefault();
-        mutate(formData);
-    };
-
-    const handleGoogleSubmit = (e) => {
-        e.preventDefault();
-        google()
+        setFormData({ ...formData, [e.target.name]: e.target.value })
     }
 
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        mutate(formData)
+    }
     return (
         <div className='h-[100dvh] flex flex-row items-center justify-center w-full'>
             <div className='h-full border-r w-[50%] overflow-hidden object-cover hidden md:inline'>
-                <img src={twitter_ath} alt="Twitter Authentication" className='object-cover w-full h-full' />
+                <img src={twitter_ath} alt="" className='object-cover w-full h-full' />
             </div>
             <div className='flex items-center flex-col justify-center w-[50%] h-full'>
-                <h1 className='text-5xl mb-5 font-bold'>Let's Go.</h1>
+                <h1 className='text-5xl mb-5 font-bold'>Lets Go.</h1>
                 <form
                     className='w-full flex items-center flex-col gap-3'
+                    onSubmit={handleSubmit}
                 >
                     <label className="input input-bordered flex items-center gap-2 w-[80%] md:w-[70%]">
                         <svg
@@ -149,11 +137,7 @@ export default function LoginPage() {
                             onChange={handleInputChange}
                         />
                     </label>
-                    {/* <OAuth /> */}
-                    <button onClick={handleGoogleSubmit} className='btn bg-green-500 hover:bg-green-400 w-[80%] md:w-[70%] text-white'>Google</button>
-                    <button className='btn btn-neutral w-[80%] md:w-[70%] text-white' onClick={handleFormSubmit}>
-                        {isLoading ? "Loading..." : "Submit"}
-                    </button>
+                    <button className='btn btn-neutral w-[80%] md:w-[70%]'>{isPending ? "Loading..." : "Submit"}</button>
                     <div>
                         <p className='text-left'>
                             Don't have an account? <Link to="/signup" className='underline font-semibold'>SignUp</Link>
@@ -162,5 +146,5 @@ export default function LoginPage() {
                 </form>
             </div>
         </div>
-    );
+    )
 }

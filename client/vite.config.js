@@ -8,8 +8,8 @@ export default defineConfig({
     port: 3000,
     proxy: {
       '/api': {
-        target: 'http://localhost:1000',
-        // target: "https://twitter-clone-n54h.onrender.com",
+        //target: 'http://localhost:1000',
+        target: "https://twitter-clone-n54h.onrender.com",
         changeOrigin: true,
       },
     },
