@@ -24,7 +24,10 @@ cloudinary.config({
 });
 
 const app = express();
-app.use(cors());
+app.use(cors({
+    origin: 'https://twiiller.netlify.app',  // Allow requests from your frontend domain
+    credentials: true  // Allow cookies to be sent
+}));
 app.use(express.json({ limit: "5mb" }));
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
