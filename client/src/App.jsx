@@ -26,7 +26,7 @@ export default function App() {
     queryKey: ['authUser'],
     queryFn: async () => {
       try {
-        const res = await fetch(`https://twitter-clone-n54h.onrender.com/api/auth/login`)
+        const res = await fetch(`${apiUrl}/api/auth/me`)
         const data = await res.json()
         if (data.error) {
           return null
