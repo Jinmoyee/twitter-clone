@@ -21,7 +21,6 @@ import Success from './pages/subscription/pages/Success';
 import Error from './pages/subscription/pages/Error';
 
 export default function App() {
-
   const { data: authUser, isLoading } = useQuery({
     queryKey: ['authUser'],
     queryFn: async () => {
