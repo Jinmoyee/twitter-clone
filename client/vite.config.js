@@ -32,4 +32,9 @@ export default defineConfig({
   },
 
   plugins: [react()],
+
+  // Enable source maps in production build
+  build: {
+    sourcemap: true,  // This enables source maps for easier debugging in production
+  },
 });
