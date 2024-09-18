@@ -10,12 +10,9 @@ import cookieParser from "cookie-parser";
 import { v2 as cloudinary } from "cloudinary";
 import cors from "cors";
 import path from "path";
-import fs from "fs";
-import url from "url";
 
-dotenv.config();
-// { path: '../.env' }
-// const __dirname = path.resolve();
+dotenv.config();  // Ensure environment variables are loaded
+const __dirname = path.resolve();  // Getting the correct __dirname for ESM
 
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_NAME,
@@ -29,24 +26,23 @@ app.use(express.json({ limit: "5mb" }));
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
+// API routes
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/post", postRoutes);
 app.use("/api/notification", notificationRoutes);
 app.use("/api/stripe", stripe);
 
-// Serve static files from the 'dist' directory
-// app.use(express.static(path.join(__dirname, "client", "dist")));
 
-// app.get("*", (req, res) => {
-//     res.sendFile(path.join(__dirname, "client", "dist", "index.html"));
-// });
-
-app.get("/", (req, res) => {
-    res.send("Hello")
-})
-
-app.listen(1000, () => {
-    console.log("Server is running on port 1000");
-    connectMongoDb();
+// Start the server and connect to the database
+const PORT = process.env.PORT || 1000;
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+    connectMongoDb();  // Connect to MongoDB
 });
+
+app.use(express.static(path.join(__dirname, "/client/dist")))
+
+app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "client", "dist", "index.html"))
+})
