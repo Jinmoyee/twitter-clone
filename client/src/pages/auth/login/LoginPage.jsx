@@ -1,10 +1,9 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useState } from 'react';
-import toast from 'react-hot-toast';
-import { Link, useNavigate } from 'react-router-dom';
-import twitter_ath from "../../../../public/twitter_auth.jpg";
-import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
-import app from '../../context/firebase';
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useState } from 'react'
+import toast from 'react-hot-toast'
+import { Link } from 'react-router-dom'
+import twitter_ath from "../../../../public/twitter_auth.jpg"
+
 
 export default function LoginPage() {
 
@@ -22,48 +21,11 @@ export default function LoginPage() {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ username, password })
-                });
-
-                if (!res.ok) {
-                    const errorData = await res.json();
-                    throw new Error(errorData.error || "Something went wrong");
-                }
-
-                const data = await res.json();
-                return data;
-            } catch (error) {
-                console.error(error);
-                toast.error(error.message);
-                throw error;
-            }
-        },
-        onSuccess: (data) => {
-            queryClient.invalidateQueries({ queryKey: ['authUser'] });
-            navigate('/'); // Navigate to home on successful login
-            toast.success('Logged In successfully');
-        }
-    });
-
-    const { mutate: google, isLoading: googleLoading, isError: googleError } = useMutation({
-        mutationFn: async () => {
-            try {
-                const provider = new GoogleAuthProvider();
-                const auth = getAuth(app);
-                const result = await signInWithPopup(auth, provider);
-
-                const res = await fetch("/api/auth/google", {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        name: result.user.displayName,
-                        photo: result.user.photoURL,
-                        email: result.user.email,
-                    })
-                });
-
-                const data = await res.json();
+                })
+                // if (!res.ok) {
+                //     throw new Error("Something went wrong")
+                // }
+                const data = await res.json()
                 if (data.error) {
                     throw new Error(data.error)
                 }
