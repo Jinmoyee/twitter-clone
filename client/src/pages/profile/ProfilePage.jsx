@@ -17,7 +17,6 @@ import toast from "react-hot-toast";
 import userProfile from "../hooks/userProfile";
 
 const ProfilePage = () => {
-
     const [coverImg, setCoverImg] = useState(null);
     const [profileImg, setProfileImg] = useState(null);
     const [feedType, setFeedType] = useState("posts");

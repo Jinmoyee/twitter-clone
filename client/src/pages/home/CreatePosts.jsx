@@ -6,7 +6,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
 const CreatePost = () => {
-
     const [text, setText] = useState("");
     const [img, setImg] = useState(null);
 
@@ -16,7 +15,7 @@ const CreatePost = () => {
     const { mutate: createPost, isPending } = useMutation({
         mutationFn: async ({ text, img }) => {
             try {
-                const res = await fetch(`/api/post/create`, {
+                const res = await fetch("/api/post/create", {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

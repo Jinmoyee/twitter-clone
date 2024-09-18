@@ -3,7 +3,6 @@ import React from 'react'
 import toast from 'react-hot-toast'
 
 export default function useFollow() {
-
     const queryClient = useQueryClient()
 
     const { mutate: follow } = useMutation({

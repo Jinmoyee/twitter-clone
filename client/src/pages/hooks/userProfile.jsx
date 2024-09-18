@@ -2,7 +2,6 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 
 const userProfile = () => {
-
     const queryClient = useQueryClient()
     const { mutateAsync: updateProfile, isPending: isUpdatingProfile } = useMutation({
         mutationFn: async (formData) => {

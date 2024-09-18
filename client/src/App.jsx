@@ -25,7 +25,7 @@ export default function App() {
     queryKey: ['authUser'],
     queryFn: async () => {
       try {
-        const res = await fetch(`/api/auth/me`)
+        const res = await fetch('/api/auth/me')
         const data = await res.json()
         if (data.error) {
           return null
@@ -33,7 +33,7 @@ export default function App() {
         if (!res.ok) {
           throw new Error(data.error || 'Failed to fetch user data')
         }
-        console.log("Auth User", data)
+        // console.log("Auth User", data)
         return data
       } catch (error) {
         throw new Error(error)

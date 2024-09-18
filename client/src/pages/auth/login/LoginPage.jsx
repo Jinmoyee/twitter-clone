@@ -1,65 +1,115 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { useState } from 'react'
-import toast from 'react-hot-toast'
-import { Link } from 'react-router-dom'
-import twitter_ath from "../../../../public/twitter_auth.jpg"
-
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
+import toast from 'react-hot-toast';
+import { Link, useNavigate } from 'react-router-dom';
+import twitter_ath from "../../../../public/twitter_auth.jpg";
+import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
+import app from '../../context/firebase';
 
 export default function LoginPage() {
-
     const [formData, setFormData] = useState({
         username: '',
         password: ''
-    })
+    });
 
-    const queryClient = useQueryClient()
+    const queryClient = useQueryClient();
+    const navigate = useNavigate();
 
-    const { mutate, isError, isPending, error } = useMutation({
+    const { mutate, isError, isLoading, error } = useMutation({
         mutationFn: async ({ username, password }) => {
             try {
                 const res = await fetch('/api/auth/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ username, password })
-                })
-                // if (!res.ok) {
-                //     throw new Error("Something went wrong")
-                // }
-                const data = await res.json()
-                if (data.error) {
-                    throw new Error(data.error)
+                });
+
+                if (!res.ok) {
+                    const errorData = await res.json();
+                    throw new Error(errorData.error || "Something went wrong");
                 }
-                console.log(data)
-                toast.success('Logged In successfully')
-                return data
+
+                const data = await res.json();
+                return data;
             } catch (error) {
-                console.error(error)
-                toast.error(error.message)
+                console.error(error);
+                toast.error(error.message);
+                throw error;
             }
         },
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["authUser"] })
+        onSuccess: (data) => {
+            queryClient.invalidateQueries({ queryKey: ['authUser'] });
+            navigate('/'); // Navigate to home on successful login
+            toast.success('Logged In successfully');
         }
-    })
+    });
+
+    const { mutate: google, isLoading: googleLoading, isError: googleError } = useMutation({
+        mutationFn: async () => {
+            try {
+                const provider = new GoogleAuthProvider();
+                const auth = getAuth(app);
+                const result = await signInWithPopup(auth, provider);
+
+                const res = await fetch("/api/auth/google", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        name: result.user.displayName,
+                        photo: result.user.photoURL,
+                        email: result.user.email,
+                    })
+                });
+
+                const data = await res.json();
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+
+                return data; // Return data to be handled in onSuccess
+            } catch (error) {
+                console.error("Could not connect with Google", error);
+                toast.error("Google authentication failed.");
+                throw error; // Re-throw the error for onError and React Query handling
+            }
+        },
+        onSuccess: (data) => {
+            queryClient.invalidateQueries({ queryKey: ['authUser'] });
+            navigate('/'); // Navigate to home on successful login
+            toast.success('Logged In successfully');
+        },
+        onError: (error) => {
+            console.error(error);
+            toast.error(error.message || "Google authentication failed.");
+        }
+    });
+
 
     const handleInputChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value })
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const handleFormSubmit = (e) => {
+        e.preventDefault();
+        mutate(formData);
+    };
+
+    const handleGoogleSubmit = (e) => {
+        e.preventDefault();
+        google()
     }
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        mutate(formData)
-    }
     return (
         <div className='h-[100dvh] flex flex-row items-center justify-center w-full'>
             <div className='h-full border-r w-[50%] overflow-hidden object-cover hidden md:inline'>
-                <img src={twitter_ath} alt="" className='object-cover w-full h-full' />
+                <img src={twitter_ath} alt="Twitter Authentication" className='object-cover w-full h-full' />
             </div>
             <div className='flex items-center flex-col justify-center w-[50%] h-full'>
-                <h1 className='text-5xl mb-5 font-bold'>Lets Go.</h1>
+                <h1 className='text-5xl mb-5 font-bold'>Let's Go.</h1>
                 <form
                     className='w-full flex items-center flex-col gap-3'
-                    onSubmit={handleSubmit}
                 >
                     <label className="input input-bordered flex items-center gap-2 w-[80%] md:w-[70%]">
                         <svg
@@ -99,7 +149,11 @@ export default function LoginPage() {
                             onChange={handleInputChange}
                         />
                     </label>
-                    <button className='btn btn-neutral w-[80%] md:w-[70%]'>{isPending ? "Loading..." : "Submit"}</button>
+                    {/* <OAuth /> */}
+                    <button onClick={handleGoogleSubmit} className='btn bg-green-500 hover:bg-green-400 w-[80%] md:w-[70%] text-white'>Google</button>
+                    <button className='btn btn-neutral w-[80%] md:w-[70%] text-white' onClick={handleFormSubmit}>
+                        {isLoading ? "Loading..." : "Submit"}
+                    </button>
                     <div>
                         <p className='text-left'>
                             Don't have an account? <Link to="/signup" className='underline font-semibold'>SignUp</Link>
@@ -108,5 +162,5 @@ export default function LoginPage() {
                 </form>
             </div>
         </div>
-    )
+    );
 }
