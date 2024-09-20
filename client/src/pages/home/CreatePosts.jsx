@@ -1,5 +1,4 @@
 import { CiImageOn } from "react-icons/ci";
-import { BsEmojiSmileFill } from "react-icons/bs";
 import { useRef, useState } from "react";
 import { IoCloseSharp } from "react-icons/io5";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -48,11 +47,14 @@ const CreatePost = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        // Check if the user has an active subscription and within tweet limit
         const currentTime = new Date();
         const currentHour = currentTime.getHours();
+        const currentMinute = currentTime.getMinutes();
+
+        const followingCount = authUser?.following?.length || 0;
+        const tweetCount = authUser?.tweetCount || 0;
+
         const userPlan = authUser?.subscriptionPlan;
-        const tweetCount = authUser?.tweetCount;
         const tweetLimit = authUser?.tweetLimit;
         const subscriptionExpiration = new Date(authUser?.subscriptionExpiration);
 
@@ -69,6 +71,24 @@ const CreatePost = () => {
         if (tweetCount >= tweetLimit) {
             toast.error(`You have reached your tweet limit for the ${userPlan} plan. Upgrade your plan or wait for the next period.`);
             return;
+        }
+
+        if (followingCount === 0) {
+            if (
+                currentHour !== 10 ||
+                (currentHour === 10 && currentMinute > 30) ||
+                tweetCount >= 1
+            ) {
+                toast.error("You can post only once between 10:00 AM and 10:30 AM IST if you have no followers.");
+                return;
+            }
+        } else if (followingCount === 2) {
+            if (tweetCount >= 2) {
+                toast.error("You can post only 2 times per day as you follow 2 people.");
+                return;
+            }
+        } else if (followingCount > 10) {
+            // No restrictions
         }
 
         createPost({ text, img });

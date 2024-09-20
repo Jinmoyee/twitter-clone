@@ -105,7 +105,7 @@ export default function Sidebar() {
                                 <img src={userData.profileImg || "/avatar-placeholder.png"} alt="" className='rounded-full w-12 h-12 border-2 border-black' />
                             </div>
                             <div>
-                                <p className='w-[90%] overflow-hidden truncate font-medium hidden lg:block'>{userData.fullName}</p>
+                                <p className='w-[80%] overflow-hidden truncate font-medium hidden lg:block'>{userData.fullName}</p>
                                 <p className='w-[80%] overflow-hidden truncate hidden lg:block'>@{userData.username}</p>
                             </div>
                         </div>

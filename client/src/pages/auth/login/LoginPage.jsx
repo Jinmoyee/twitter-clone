@@ -150,9 +150,9 @@ export default function LoginPage() {
                         />
                     </label>
                     {/* <OAuth /> */}
-                    <button onClick={handleGoogleSubmit} className='btn bg-green-500 hover:bg-green-400 w-[80%] md:w-[70%] text-white'>Google</button>
-                    <button className='btn btn-neutral w-[80%] md:w-[70%] text-white' onClick={handleFormSubmit}>
-                        {isLoading ? "Loading..." : "Submit"}
+                    <button type="submit" onClick={handleGoogleSubmit} className='btn bg-green-500 hover:bg-green-400 w-[80%] md:w-[70%] text-white'>Google</button>
+                    <button type="submit" className='btn btn-neutral w-[80%] md:w-[70%] text-white' onClick={handleFormSubmit}>
+                        {isLoading ? "Loading..." : "Login"}
                     </button>
                     <div>
                         <p className='text-left'>
