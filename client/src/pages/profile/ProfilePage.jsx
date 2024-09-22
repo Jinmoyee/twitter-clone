@@ -15,6 +15,7 @@ import { formatMemberSinceDate } from "../../utils/dates";
 import useFollow from "../hooks/useFollow";
 import toast from "react-hot-toast";
 import userProfile from "../hooks/userProfile";
+import Weather from "../hooks/Weather";
 
 const ProfilePage = () => {
     const [coverImg, setCoverImg] = useState(null);
@@ -188,6 +189,17 @@ const ProfilePage = () => {
                                             </a>
                                         </div>
                                     )}
+
+                                    {/* Weather Component */}
+                                    {user?.location && (
+                                        <div className='px-4'>
+                                            {(() => {
+                                                const [lat, lon] = user.location.split(",").map(coord => parseFloat(coord.trim()));
+                                                return <Weather lat={lat} lon={lon} />;
+                                            })()}
+                                        </div>
+                                    )}
+
 
                                     <div className='flex gap-2 items-center'>
                                         <IoCalendarOutline className='w-4 h-4 text-slate-500' />
