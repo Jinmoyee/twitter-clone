@@ -194,8 +194,14 @@ const ProfilePage = () => {
                                     {user?.location && (
                                         <div className='px-4'>
                                             {(() => {
-                                                const [lat, lon] = user.location.split(",").map(coord => parseFloat(coord.trim()));
-                                                return <Weather lat={lat} lon={lon} />;
+                                                const location = user.location;
+                                                const isCoordinate = location.includes(",") && location.split(",").length === 2;
+                                                if (isCoordinate) {
+                                                    const [lat, lon] = location.split(",").map(coord => parseFloat(coord.trim()));
+                                                    return <Weather lat={lat} lon={lon} />;
+                                                } else {
+                                                    return <Weather locationName={location} />;
+                                                }
                                             })()}
                                         </div>
                                     )}
