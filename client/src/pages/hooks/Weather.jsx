@@ -78,7 +78,7 @@ const Weather = ({ lat, lon, locationName }) => {
                     <span className='ml-2'>{weather.temp}°C, {weather.description}</span>
                 </div>
             ) : (
-                <span>Error fetching weather</span>
+                <span></span>
             )}
         </div>
     );
