@@ -17,25 +17,25 @@ const SubscriptionPage = () => {
         { name: 'Gold Plan', price: '₹1000/month', tweets: 'Unlimited', priceId: 'price_1PzQpA2MeAP7D6CV56DUmsQW' },
     ];
 
-    useEffect(() => {
-        const checkPaymentWindow = () => {
-            const now = new Date();
-            const hours = now.getUTCHours() + 5.5; // Convert to IST (UTC+5:30)
-            const minutes = now.getUTCMinutes();
-            if (hours >= 10 && hours < 11) {
-                setIsPaymentAllowed(true);
-            } else if (hours === 10 && minutes === 0) { // Special case for exactly 10 AM to allow payments
-                setIsPaymentAllowed(true);
-            } else {
-                setIsPaymentAllowed(false);
-            }
-        };
+    // useEffect(() => {
+    //     const checkPaymentWindow = () => {
+    //         const now = new Date();
+    //         const hours = now.getUTCHours() + 5.5; // Convert to IST (UTC+5:30)
+    //         const minutes = now.getUTCMinutes();
+    //         if (hours >= 10 && hours < 11) {
+    //             setIsPaymentAllowed(true);
+    //         } else if (hours === 10 && minutes === 0) { // Special case for exactly 10 AM to allow payments
+    //             setIsPaymentAllowed(true);
+    //         } else {
+    //             setIsPaymentAllowed(false);
+    //         }
+    //     };
 
-        checkPaymentWindow();
-        const intervalId = setInterval(checkPaymentWindow, 60000); // Check every minute
+    //     checkPaymentWindow();
+    //     const intervalId = setInterval(checkPaymentWindow, 60000); // Check every minute
 
-        return () => clearInterval(intervalId); // Clean up interval on component unmount
-    }, []);
+    //     return () => clearInterval(intervalId); // Clean up interval on component unmount
+    // }, []);
 
     const handlePayment = async () => {
         // if (!isPaymentAllowed) {
