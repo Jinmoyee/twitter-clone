@@ -38,10 +38,10 @@ const SubscriptionPage = () => {
     }, []);
 
     const handlePayment = async () => {
-        if (!isPaymentAllowed) {
-            toast.error('Payment is currently disabled.');
-            return;
-        }
+        // if (!isPaymentAllowed) {
+        //     toast.error('Payment is currently disabled.');
+        //     return;
+        // }
 
         if (!selectedPlan) {
             toast.error('Please select a plan.');
