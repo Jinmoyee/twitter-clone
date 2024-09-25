@@ -35,8 +35,8 @@ export const paymentMethod = async (req, res) => {
                 },
             ],
             customer_email: user.email,  // Associate user email with Stripe
-            success_url: `http://localhost:3000/payment-success`, // Replace with your front-end success URL
-            cancel_url: `http://localhost:3000/payment-cancel`, // Replace with your front-end cancel URL
+            success_url: `https://twitter-prju.onrender.com/payment-success`, // Replace with your front-end success URL
+            cancel_url: `https://twitter-prju.onrender.com/payment-cancel`, // Replace with your front-end cancel URL
         });
 
         // Update user's tweet limit based on selected plan
